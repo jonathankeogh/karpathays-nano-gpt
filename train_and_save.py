@@ -253,10 +253,16 @@ def estimate_loss():
     model.train()
     return out
 
+# keep track of the best validation loss so far, so we only save the model that's best, after a while it overfits
+best_val = float('inf')
+
 for iter in range(max_iters):
 
     if iter % loss_step == 0:
         losses = estimate_loss()
+        if losses['val'] < best_val:
+            best_val = losses['val']
+            torch.save(model.state_dict(), 'model.pt')
         print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
 
 
