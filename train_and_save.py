@@ -15,6 +15,7 @@ n_embed = 384
 dropout=0.2 # probability of dropping out a neuron
 n_layers = 6
 n_head = 6
+torch.set_float32_matmul_precision('high') # allows TF32 matmuls, a one-line speed-up on this card.
 
 
 
@@ -268,6 +269,9 @@ for iter in range(max_iters):
     loss.backward()
 
     optimiser.step()
+
+# save the model
+torch.save(model.state_dict(), 'model.pt')
 
 # back to evaluation / inference mode, not training mode
 model.eval()
